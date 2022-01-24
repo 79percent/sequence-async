@@ -1,5 +1,5 @@
 {
-  "name": "sequence",
+  "name": "sequence-async",
   "version": "1.0.0",
   "description": "异步顺序执行",
   "main": "index.js",
@@ -11,7 +11,8 @@
     "url": "git+https://github.com/79percent/sequence.git"
   },
   "keywords": [
-    "sequence"
+    "sequence",
+    "sequence-async"
   ],
   "author": "79percent",
   "license": "ISC",
