@@ -1,0 +1,22 @@
+{
+  "name": "sequence",
+  "version": "1.0.0",
+  "description": "异步顺序执行",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/79percent/sequence.git"
+  },
+  "keywords": [
+    "sequence"
+  ],
+  "author": "79percent",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/79percent/sequence/issues"
+  },
+  "homepage": "https://github.com/79percent/sequence#readme"
+}
