@@ -1,4 +1,4 @@
-# sequence
+# sequence-async
 
 JavaScript invokes asynchronous tasks sequentially and waits for the previous task to execute before continuing to execute the next task.
 
