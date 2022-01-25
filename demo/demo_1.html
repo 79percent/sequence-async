@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style></style>
+  </head>
+  <body>
+    <script>
+      function sequence(key) {
+        return (callback) => {
+          if (!Array.isArray(sequence.sequenceMap[key])) {
+            sequence.sequenceMap[key] = [];
+          }
+          sequence.sequenceMap[key].push({
+            callback,
+            status: "pending", // pending | ready | done
+          });
+          const queue = sequence.sequenceMap[key];
+          const index = queue.length - 1;
+          return () => {
+            queue[index].status = "ready";
+            let firstReadyIndex = queue.findIndex(
+              (item) => item.status === "ready"
+            );
+            let firstPendingIndex = queue.findIndex(
+              (item) => item.status === "pending"
+            );
+            if (
+              firstPendingIndex !== -1 &&
+              firstPendingIndex < firstReadyIndex
+            ) {
+              return;
+            }
+            let end =
+              firstPendingIndex === -1 ? queue.length - 1 : firstPendingIndex;
+            for (let i = firstReadyIndex; i <= end; i++) {
+              if (queue[i].status === "ready") {
+                queue[i].callback();
+                queue[i].status = "done";
+              }
+            }
+          };
+        };
+      }
+      sequence.sequenceMap = {};
+    </script>
+    <script>
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = 500;
+      canvas.height = 400;
+      document.body.appendChild(canvas);
+      const imgArr = [
+        "https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/baike/pic/item/7aec54e736d12f2e31b762424ec2d56285356866.jpg",
+        "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fbpic.588ku.com%2Fart_water_pic%2F19%2F11%2F22%2F4ca9eef797fced7cb91378e9de8cb013.jpg&refer=http%3A%2F%2Fbpic.588ku.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1645602268&t=8a4520216f7980c70fb1e837687e2c38",
+        "https://img2.baidu.com/it/u=4090326885,719985005&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=614",
+      ];
+      imgArr.forEach((item, index) => {
+        const img = new Image();
+        img.onload = sequence("imgs")(() => {
+          console.log(index);
+          ctx.drawImage(img, index * 50, index * 50, 100, 100);
+        });
+        img.src = item;
+      });
+    </script>
+  </body>
+</html>

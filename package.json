@@ -1,11 +1,9 @@
 {
   "name": "sequence-async",
   "version": "1.0.0",
-  "description": "异步顺序执行",
+  "description": "JavaScript invokes asynchronous tasks sequentially and waits for the previous task to execute before continuing to execute the next task.",
   "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/79percent/sequence.git"
@@ -19,5 +17,6 @@
   "bugs": {
     "url": "https://github.com/79percent/sequence/issues"
   },
-  "homepage": "https://github.com/79percent/sequence#readme"
+  "homepage": "https://github.com/79percent/sequence#readme",
+  "devDependencies": {}
 }
