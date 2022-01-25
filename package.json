@@ -2,15 +2,29 @@
   "name": "sequence-async",
   "version": "1.0.0",
   "description": "JavaScript invokes asynchronous tasks sequentially and waits for the previous task to execute before continuing to execute the next task.",
-  "main": "index.js",
-  "scripts": {},
+  "main": "dist/sequence-async.cjs.js",
+  "module": "dist/sequence-async.esm.js",
+  "browser": "dist/sequence-async.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "node test/test.js",
+    "pretest": "npm run build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "rollup": "^2.66.1",
+    "rollup-plugin-json": "^4.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/79percent/sequence.git"
   },
   "keywords": [
     "sequence",
-    "sequence-async"
+    "sequence-async",
+    "async"
   ],
   "author": "79percent",
   "license": "ISC",
@@ -18,5 +32,7 @@
     "url": "https://github.com/79percent/sequence/issues"
   },
   "homepage": "https://github.com/79percent/sequence#readme",
-  "devDependencies": {}
+  "files": [
+    "dist"
+  ]
 }
