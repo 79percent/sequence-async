@@ -6,7 +6,9 @@ JavaScript 顺序调用异步任务，需等待上一个任务执行后，才会
 
 ## Installation
 
-> npm install sequence-async
+```bash 
+npm i sequence-async
+```
 
 ## Usage
 
