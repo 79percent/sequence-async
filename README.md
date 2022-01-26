@@ -6,7 +6,7 @@ JavaScript 顺序调用异步任务，需等待上一个任务执行后，才会
 
 ## Installation
 
-```bash 
+```bash
 npm i sequence-async
 ```
 
@@ -14,6 +14,8 @@ npm i sequence-async
 
 ```javascript
 import { sequence } from "sequence-async";
+// or
+// const { sequence } = require('sequence-async');
 
 const imgs = ["img_url_1", "img_url_2", "img_url_3"];
 
