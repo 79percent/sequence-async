@@ -19,17 +19,21 @@ import { sequence } from "sequence-async";
 
 const imgs = ["img_url_1", "img_url_2", "img_url_3"];
 
+const sequenceFn = sequence("key");
+
 imgs.forEach((item, index) => {
   const img = new Image();
   img.style.width = "100px";
   img.style.height = "100px";
-  img.onload = sequence("key")(() => {
+  img.onload = sequenceFn(() => {
     console.log(index);
     document.body.appendChild(img);
   });
   img.src = item;
 });
 
+// No matter the picture fits the load is complete, always output
+// 无论图片何时加载完成，永远输出
 // 0
 // 1
 // 2
