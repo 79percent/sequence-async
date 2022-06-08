@@ -1,4 +1,4 @@
-const sequence = require('sequence-async');
+const sequence = require('../dist/sequence-async.cjs');
 
 const testSeq = sequence('test');
 

@@ -1,3 +1,3 @@
 import sequence from "./sequence";
 
-export { sequence };
+export default sequence;

@@ -1,11 +1,11 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global["sequence-async"] = {}));
-})(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["sequence-async"] = factory());
+})(this, (function () { 'use strict';
 
   function sequence(key) {
-    return (callback) => {
+    function fn(callback) {
       if (!Array.isArray(sequence.sequenceMap[key])) {
         sequence.sequenceMap[key] = [];
       }
@@ -13,14 +13,16 @@
         callback,
         status: "pending", // pending | ready | done
       });
-      const queue = sequence.sequenceMap[key];
-      const index = queue.length - 1;
+      const index = sequence.sequenceMap[key].length - 1;
       return () => {
-        queue[index].status = "ready";
-        let firstReadyIndex = queue.findIndex(
+        if (!sequence.sequenceMap[key][index]) {
+          return;
+        }
+        sequence.sequenceMap[key][index].status = "ready";
+        let firstReadyIndex = sequence.sequenceMap[key].findIndex(
           (item) => item.status === "ready"
         );
-        let firstPendingIndex = queue.findIndex(
+        let firstPendingIndex = sequence.sequenceMap[key].findIndex(
           (item) => item.status === "pending"
         );
         if (
@@ -30,20 +32,22 @@
           return;
         }
         let end =
-          firstPendingIndex === -1 ? queue.length - 1 : firstPendingIndex;
+          firstPendingIndex === -1 ? sequence.sequenceMap[key].length - 1 : firstPendingIndex;
         for (let i = firstReadyIndex; i <= end; i++) {
-          if (queue[i].status === "ready") {
-            queue[i].callback();
-            queue[i].status = "done";
+          if (sequence.sequenceMap[key][i] && sequence.sequenceMap[key][i].status === "ready") {
+            sequence.sequenceMap[key][i].status = "done";
+            sequence.sequenceMap[key][i].callback();
           }
         }
       };
+    }
+    fn.clear = function () {
+      sequence.sequenceMap[key] = [];
     };
+    return fn;
   }
   sequence.sequenceMap = {};
 
-  exports.sequence = sequence;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return sequence;
 
 }));

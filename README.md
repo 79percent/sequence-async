@@ -13,34 +13,42 @@ npm i sequence-async
 ## Usage
 
 ```javascript
-import { sequence } from "sequence-async";
-// or
-// const { sequence } = require('sequence-async');
+const sequence = require("sequence-async");
 
-const imgs = ["img_url_1", "img_url_2", "img_url_3"];
+const testSeq = sequence("test");
 
-const sequenceFn = sequence("key");
-
-imgs.forEach((item, index) => {
-  const img = new Image();
-  img.style.width = "100px";
-  img.style.height = "100px";
-  img.onload = sequenceFn(() => {
-    console.log(index);
-    document.body.appendChild(img);
-  });
-  img.src = item;
+const a = testSeq(() => {
+  console.log("a");
+});
+const b = testSeq(() => {
+  console.log("b");
+});
+const c = testSeq(() => {
+  console.log("c");
 });
 
-// No matter the picture fits the load is complete, always output
-// 无论图片何时加载完成，永远输出
-// 0
-// 1
-// 2
+setTimeout(a, 1500);
+setTimeout(b, 1000);
+setTimeout(c, 500);
+
+// 虽然定时器的执行顺序应该是 c > b > a，但是输出结果是
+// a
+// b
+// c
 ```
 
 ## API
 
+- sequence
+
 ```TypeScript
 sequence(key: string | Symbol)(callback: () => void): () => void;
+```
+
+- .clear
+
+```TypeScript
+const testSeq = sequence("test");
+
+testSeq.clear();
 ```
