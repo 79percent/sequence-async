@@ -1,5 +1,5 @@
 function sequence(key) {
-  return (callback) => {
+  function fn(callback) {
     if (!Array.isArray(sequence.sequenceMap[key])) {
       sequence.sequenceMap[key] = [];
     }
@@ -7,14 +7,16 @@ function sequence(key) {
       callback,
       status: "pending", // pending | ready | done
     });
-    const queue = sequence.sequenceMap[key];
-    const index = queue.length - 1;
+    const index = sequence.sequenceMap[key].length - 1;
     return () => {
-      queue[index].status = "ready";
-      let firstReadyIndex = queue.findIndex(
+      if (!sequence.sequenceMap[key][index]) {
+        return;
+      }
+      sequence.sequenceMap[key][index].status = "ready";
+      let firstReadyIndex = sequence.sequenceMap[key].findIndex(
         (item) => item.status === "ready"
       );
-      let firstPendingIndex = queue.findIndex(
+      let firstPendingIndex = sequence.sequenceMap[key].findIndex(
         (item) => item.status === "pending"
       );
       if (
@@ -24,16 +26,20 @@ function sequence(key) {
         return;
       }
       let end =
-        firstPendingIndex === -1 ? queue.length - 1 : firstPendingIndex;
+        firstPendingIndex === -1 ? sequence.sequenceMap[key].length - 1 : firstPendingIndex;
       for (let i = firstReadyIndex; i <= end; i++) {
-        if (queue[i].status === "ready") {
-          queue[i].callback();
-          queue[i].status = "done";
+        if (sequence.sequenceMap[key][i] && sequence.sequenceMap[key][i].status === "ready") {
+          sequence.sequenceMap[key][i].status = "done";
+          sequence.sequenceMap[key][i].callback();
         }
       }
     };
+  }
+  fn.clear = function () {
+    sequence.sequenceMap[key] = [];
   };
+  return fn;
 }
 sequence.sequenceMap = {};
 
-export { sequence };
+export { sequence as default };
