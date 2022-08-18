@@ -7,7 +7,7 @@ const a = testSeq(() => {
 });
 const b = testSeq(() => {
   console.log('b')
-  testSeq.clear();
+  // testSeq.clear();
 });
 const c = testSeq(() => {
   console.log('c')
@@ -16,3 +16,7 @@ const c = testSeq(() => {
 setTimeout(a, 1500);
 setTimeout(b, 1000);
 setTimeout(c, 500);
+
+// setTimeout(a, 500);
+// setTimeout(b, 1000);
+// setTimeout(c, 1500);

@@ -5,47 +5,69 @@
 })(this, (function () { 'use strict';
 
   function sequence(key) {
-    function fn(callback) {
-      if (!Array.isArray(sequence.sequenceMap[key])) {
-        sequence.sequenceMap[key] = [];
-      }
-      sequence.sequenceMap[key].push({
-        callback,
-        status: "pending", // pending | ready | done
-      });
-      const index = sequence.sequenceMap[key].length - 1;
-      return () => {
-        if (!sequence.sequenceMap[key][index]) {
-          return;
-        }
-        sequence.sequenceMap[key][index].status = "ready";
-        let firstReadyIndex = sequence.sequenceMap[key].findIndex(
-          (item) => item.status === "ready"
-        );
-        let firstPendingIndex = sequence.sequenceMap[key].findIndex(
-          (item) => item.status === "pending"
-        );
-        if (
-          firstPendingIndex !== -1 &&
-          firstPendingIndex < firstReadyIndex
-        ) {
-          return;
-        }
-        let end =
-          firstPendingIndex === -1 ? sequence.sequenceMap[key].length - 1 : firstPendingIndex;
-        for (let i = firstReadyIndex; i <= end; i++) {
-          if (sequence.sequenceMap[key][i] && sequence.sequenceMap[key][i].status === "ready") {
-            sequence.sequenceMap[key][i].status = "done";
-            sequence.sequenceMap[key][i].callback();
-          }
-        }
+    if (!sequence.sequenceMap[key]) {
+      sequence.sequenceMap[key] = {
+        callbackList: [],
+        current: null,
+        executor: null,
+        waiting2Executed: []
       };
     }
+    function fn(callback) {
+      if (!sequence.sequenceMap[key]) {
+        throw Error('Whether the sequence(key) has not been called?')
+      }
+      const index = sequence.sequenceMap[key].callbackList.length;
+      const callbackList = sequence.sequenceMap[key].callbackList;
+      callbackList.push(callback);
+      function* gn() {
+        yield -1;
+        for (let index = 0; index < callbackList.length; index++) {
+          callbackList[index]();
+          yield index;
+        }
+      }
+      sequence.sequenceMap[key].executor = gn();
+      sequence.sequenceMap[key].current = sequence.sequenceMap[key].executor.next();
+      function executed() {
+        if (sequence.sequenceMap[key].current.done) {
+          return;
+        }
+        sequence.sequenceMap[key].current = sequence.sequenceMap[key].executor.next();
+      }
+      return function () {
+        if (!sequence.sequenceMap[key].current || !sequence.sequenceMap[key].executor) {
+          return;
+        }
+        if (sequence.sequenceMap[key].current.value === index - 1) {
+          executed();
+        } else {
+          sequence.sequenceMap[key].waiting2Executed.push(index);
+        }
+        sequence.sequenceMap[key].waiting2Executed.sort((a, b) => a - b);// 排序 从小到大
+        sequence.sequenceMap[key].waiting2Executed.forEach(i => {
+          if (!sequence.sequenceMap[key].current || !sequence.sequenceMap[key].executor) {
+            return;
+          }
+          if (sequence.sequenceMap[key].current.value === i - 1) {
+            executed();
+          }
+        });
+        sequence.sequenceMap[key].waiting2Executed = sequence.sequenceMap[key].waiting2Executed.filter(i => i > sequence.sequenceMap[key].current.value);
+      }
+    }
+    // 清除
     fn.clear = function () {
-      sequence.sequenceMap[key] = [];
+      sequence.sequenceMap[key] = {
+        callbackList: [],
+        current: null,
+        executor: null,
+        waiting2Executed: []
+      };
     };
     return fn;
   }
+
   sequence.sequenceMap = {};
 
   return sequence;

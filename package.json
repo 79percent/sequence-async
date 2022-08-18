@@ -1,6 +1,6 @@
 {
   "name": "sequence-async",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JavaScript invokes asynchronous tasks sequentially and waits for the previous task to execute before continuing to execute the next task.",
   "main": "dist/sequence-async.cjs.js",
   "module": "dist/sequence-async.esm.js",
