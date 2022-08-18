@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "rollup": "^2.66.1",
-    "sequence-async": "^1.0.2"
+    "sequence-async": "1.0.3"
   },
   "repository": {
     "type": "git",
